@@ -88,8 +88,8 @@ Tweets, Users, and Movies
 
 * What fields will each database table have? Which field of them is the primary key? You should list the fields for each database table here, e.g.
 Tweets:
--tweet_text
 -tweet_id (primary key)
+-tweet_text
 -user_id
 -movie_id
 -num_favorites
