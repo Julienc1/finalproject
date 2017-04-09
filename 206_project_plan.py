@@ -59,7 +59,7 @@ class Task2(unittest.TestCase):
 		cur = conn.cursor()
 		cur.execute('SELECT * FROM Movies');
 		result = cur.fetchall()
-		self.assertTrue(len(result)=3, "Testing to see if there are 3 movies in the Database")
+		self.assertTrue(len(result)==3, "Testing to see if there are 3 movies in the Database")
 		conn.close()
 
 	def test_movies_1(self):
@@ -68,13 +68,14 @@ class Task2(unittest.TestCase):
 		cur.execute('SELECT tweet_text FROM Tweets WHERE num_favorites > 5');
 		tweet_text1 = cur.fetchall()
 		tweet_text = [" ".join(x) for x in result1]
-		self.assertEqual(type(result), type([]), "Testing to see if result is a list of strings")
-		self.assertEqual(type(result[0]), type(""), "Testing to see if result[0] is a string")
+		self.assertEqual(type(tweet_text), type([]), "Testing to see if tweet_text is a list of strings")
+		self.assertEqual(type(tweet_text[0]), type(""), "Testing to see if it is a string")
 		conn.close()
 
 class TestOMDB(unittest.TestCase):
 	def test_omdb_search(self):
 		self.assertEqual(type(omdb_list), type([]), "Testing to see if omdb_list is a list of strings")
+	def test_omdb_search_1(self):
 		self.assertEqual(type(omdb_list[0]), type(""), "Testing to see if omdb_list[0] is a string")
 
 
