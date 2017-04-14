@@ -158,6 +158,8 @@ class Movie():
 		self.language = movie_dict["Language"]
 		self.actors = movie_dict["Actors"]
 		self.plot = movie_dict["Plot"]
+		self.id = movie_dict["imdbID"]
+		self.release_date = movie_dict["Released"]
 
 	def __str__(self):
 		return "This movie has an imdb rating of {}, the primary language of the movie is {}, and the plot is: {}".format(self.rating, self.language, self.plot)
@@ -222,6 +224,7 @@ cur.execute(statement)
 
 
 
+
 ##Create a database file called Tweets and include:
 #-tweet_id (primary key)
 #-tweet_text
@@ -254,11 +257,50 @@ cur.execute(statement)
 #-top_actor
 #-rated
 #-released
-statement = 'CREATE TABLE IF NOT EXISTS Users (movie_id TEXT PRIMARY KEY, movie_title TEXT, director TEXT, num_languages TEXT, imdb_rating TEXT, top_actor TEXT)'
+statement = 'CREATE TABLE IF NOT EXISTS Movies (movie_id TEXT PRIMARY KEY, movie_title TEXT, director TEXT, num_languages INTEGER, imdb_rating TEXT, top_actor TEXT, release_date TEXT)'
 cur.execute(statement)
 
 
 
+movie_id = []
+movie_title = []
+director = []
+num_languages2 = []
+num_languages = []
+imdb_rating = []
+actors = []
+top_actor = []
+release_date = []
+
+for movie in movie_instances:
+	movie_id.append(movie.id)
+for movie in movie_instances:
+	movie_title.append(movie.title)
+for movie in movie_instances:
+	director.append(movie.director)
+for movie in movie_instances:
+	num_languages2.append(movie.language)
+num_languages1 = [languages.split(" ") for languages in num_languages2]
+for language in num_languages1:
+	num_languages.append(len(language))
+for movie in movie_instances:
+	imdb_rating.append(movie.rating)
+for movie in movie_instances:
+	actors.append(movie.actors)
+top_actor1 = [x.split(',') for x in actors if x]
+#print(top_actor1)
+for actor in top_actor1:
+	top_actor.append(actor[0])
+for movie in movie_instances:
+	release_date.append(movie.release_date)
+
+
+movie_table_info = zip(movie_id, movie_title, director, num_languages, imdb_rating, top_actor, release_date)
+
+statement = 'INSERT OR IGNORE INTO Movies VALUES (?, ?, ?, ?, ?, ?, ?)'
+for movie in movie_table_info:
+	cur.execute(statement, movie)
+conn.commit()
 
 
 
@@ -282,8 +324,8 @@ cur.execute(statement)
 
 
 
-
-
+### IMPORTANT: CLOSE YOUR DATABASE CONNECTION!
+conn.close()
 
 
 
