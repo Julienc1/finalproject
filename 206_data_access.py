@@ -141,16 +141,29 @@ def get_movie_info(movie_title):
 
 ##Now invoke get_movie_info to check if it gets the correct information back in the variable shrek_info:
 shrek_info = get_movie_info("Shrek")
-print(shrek_info)
+#print(shrek_info)
 
 
 
 
 
 ##Define a class Movie that accepts a dictionary as the constructor that represents an individual movie.
-##It should have at least three insatnce variables and two methods. You must have this information either as instance variables or methods:
+##It should have at least three instance variables and two methods. You must have this information either as instance variables or methods:
 ##Title, director, IMDB rating, list of actors, number of languages, and anything else interesting..
+class Movie():
+	def __init__(self, movie_dict ={}):
+		self.title = movie_dict["Title"]
+		self.director = movie_dict["Director"]
+		self.rating = movie_dict["imdbRating"]
+		self.language = movie_dict["Language"]
+		self.actors = movie_dict["Actors"]
+		self.plot = movie_dict["Plot"]
 
+	def __str__(self):
+		return "This movie has an imdb rating of {}, the primary language of the movie is {}, and the plot is: {}".format(self.rating, self.language, self.plot)
+
+	def find_num_directors(self):
+		return len(self.director)
 
 
 
@@ -162,15 +175,22 @@ print(shrek_info)
 
 
 
-##Now, compile a list of three movie titles to use for your OMDB function. Compile these titles as strings for the list.
+##Now, compile a list of three movie titles to use for your OMDB function. Compile these titles as strings for the list called movies_list.
+movies_list = ["Shrek", "Airplane", "21 Jump Street"]
 
 
+##Make a request to OMDB with each of the movie titles and compile the dictionaries you get back into a list called movie_dict_list. 
 
-##Make a request to OMDB with each of the movie titles and compile the dictionaries you get back into a list. 
-
-
+movie_dict_list = []
+for movie in movies_list:
+	movie_dict_list.append(get_movie_info(movie))
+#print(movie_dict_list)
 
 ##With this list of dictionaries, create a list of Movie insatnces utilizing the Movie class.
+movie_instances = []
+for movie in movie_dict_list:
+	movie_instances.append(Movie(movie))
+#print(movie_instances[1])
 
 
 
@@ -184,6 +204,24 @@ print(shrek_info)
 
 
 
+
+
+
+# You will be creating a database file: finalproject.db
+
+conn = sqlite3.connect('finalproject.db')
+cur = conn.cursor()
+
+
+statement = 'DROP TABLE IF EXISTS Tweets'
+cur.execute(statement)
+statement = 'DROP TABLE IF EXISTS Users'
+cur.execute(statement)
+statement = 'DROP TABLE IF EXISTS Movies'
+cur.execute(statement)
+
+
+
 ##Create a database file called Tweets and include:
 #-tweet_id (primary key)
 #-tweet_text
@@ -191,7 +229,8 @@ print(shrek_info)
 #-movie_id
 #-num_favorites
 #-num_retweets
-
+statement = 'CREATE TABLE IF NOT EXISTS Tweets (tweet_id TEXT PRIMARY KEY, tweet_text TEXT, user_id REFERENCES Users(user_id), movie_id REFERENCES Movie(movie_id), num_favs INTEGER retweets INTEGER)'
+cur.execute(statement)
 
 
 
@@ -201,7 +240,8 @@ print(shrek_info)
 #-screen_name
 #-num_favourites
 #-description
-
+statement = 'CREATE TABLE IF NOT EXISTS Users (user_id TEXT PRIMARY KEY, screen_name TEXT, num_favs INTEGER, description TEXT)'
+cur.execute(statement)
 
 
 
@@ -214,7 +254,8 @@ print(shrek_info)
 #-top_actor
 #-rated
 #-released
-
+statement = 'CREATE TABLE IF NOT EXISTS Users (movie_id TEXT PRIMARY KEY, movie_title TEXT, director TEXT, num_languages TEXT, imdb_rating TEXT, top_actor TEXT)'
+cur.execute(statement)
 
 
 
