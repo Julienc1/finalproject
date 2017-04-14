@@ -89,7 +89,6 @@ def get_user_info(handle):
                  
         else:
                  twitter_results = api.user_timeline(handle)
-                 print(type(twitter_results))
                  CACHE_DICTION[unique_identifier] = twitter_results
                  f = open(CACHE_FNAME,'w')
                  f.write(json.dumps(CACHE_DICTION))
@@ -171,9 +170,25 @@ class Movie():
 
 
 
+##Create a list of the three movie names you wil search for on Twitter. Put these three movie names into the list movie_titles
+movie_titles = ["Shrek", "Airplane", "21 Jump Street"]
 
-##Define a class Tweet to handle the data I have recieved above from my functions. It should accept a dictionary representing a tweet 
-##as the constructor. This class should allow me to fill in the Tweet database with the information I need.
+
+
+
+##Now create a list of dictionaries of the tweets you will recieve back from looking up the movies
+tweet_dictionary_list = []
+for movie in movie_titles:
+	tweet_dictionary_list.append(get_tweet_data(movie))
+
+print(tweet_dictionary_list)
+
+
+
+
+
+
+
 
 
 
@@ -259,6 +274,44 @@ cur.execute(statement)
 #-released
 statement = 'CREATE TABLE IF NOT EXISTS Movies (movie_id TEXT PRIMARY KEY, movie_title TEXT, director TEXT, num_languages INTEGER, imdb_rating TEXT, top_actor TEXT, release_date TEXT)'
 cur.execute(statement)
+
+
+
+
+mentions = []
+for tweet1 in tweet_dictionary_list:
+	for tweet in tweet1:
+		mentions.append(tweet["user"]["screen_name"])
+for tweet1 in tweet_dictionary_list:
+	for tweet in tweet1:
+
+		entities = tweet["entities"]["user_mentions"]
+		for user_mention in entities:
+			mentions.append(user_mention["screen_name"])
+
+user_id = []
+screen_name = []
+num_favs = []
+description = []
+
+
+for person in mentions:
+	user_information= get_user_info(person)
+	for info in user_information:
+		user_id.append(info["user"]["id_str"])
+		screen_name.append(info["user"]["screen_name"])
+		num_favs.append(info["user"]["favourites_count"])
+		description.append(info["user"]["description"])
+
+users_table_info = zip(user_id, screen_name, num_favs, description)
+
+statement = 'INSERT OR IGNORE INTO USERS VALUES (?, ?, ?, ?)'
+for user in users_table_info:
+	cur.execute(statement, user)
+conn.commit()
+
+
+
 
 
 
