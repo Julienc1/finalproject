@@ -67,6 +67,7 @@ def get_tweet_data(phrase):
                  f.write(json.dumps(CACHE_DICTION))
                  f.close()
         tweet_data = []
+        
         for i in range(20):
         	for tweet in twitter_results["statuses"]:
         	
@@ -78,6 +79,22 @@ def get_tweet_data(phrase):
 
 shrek_tweets = get_tweet_data("Shrek")
 #print(shrek_tweets)
+
+
+
+
+
+def get_movie_titles(phrase):
+	movie_titles_list = []
+	twitter_results = api.search(phrase)
+	for i in range(20):
+		for tweet in twitter_results["statuses"]:
+			movie_titles_list.append(phrase)
+	return movie_titles_list
+
+
+
+
 
 
 ## Define a function called get_user_info that gets data from a particular Twitter user and caches the data.
@@ -167,23 +184,50 @@ class Movie():
 		return len(self.director)
 
 
+class Tweet():
+	
+	def __init__(self, tweet_dict ={}):
+
+		self.id = tweet_dict["id_str"]
+		self.text = tweet_dict["text"]
+		self.user_id = tweet_dict["user"]["id_str"]
+		self.favs = tweet_dict["favorite_count"]
+		self.retweets = tweet_dict["retweet_count"]
+
+
+
+		
+
+
+
 
 
 
 ##Create a list of the three movie names you wil search for on Twitter. Put these three movie names into the list movie_titles
-movie_titles = ["Shrek", "Airplane", "21 Jump Street"]
+movie_titles = ["Shrek", "Braveheart", "21 Jump Street"]
+
+
+
+
+
+
 
 
 
 
 ##Now create a list of dictionaries of the tweets you will recieve back from looking up the movies
 tweet_dictionary_list = []
+tweet_movie_list = []
 for movie in movie_titles:
 	tweet_dictionary_list.append(get_tweet_data(movie))
+	tweet_movie_list.append(get_movie_titles(movie))
 
-print(tweet_dictionary_list)
+print(tweet_movie_list)
 
-
+tweet_instances = []
+for tweet1 in tweet_dictionary_list:
+	for tweet in tweet1:
+		tweet_instances.append(Tweet(tweet))
 
 
 
@@ -193,7 +237,7 @@ print(tweet_dictionary_list)
 
 
 ##Now, compile a list of three movie titles to use for your OMDB function. Compile these titles as strings for the list called movies_list.
-movies_list = ["Shrek", "Airplane", "21 Jump Street"]
+movies_list = ["Shrek", "Braveheart", "21 Jump Street"]
 
 
 ##Make a request to OMDB with each of the movie titles and compile the dictionaries you get back into a list called movie_dict_list. 
@@ -212,11 +256,10 @@ for movie in movie_dict_list:
 
 
 
-##With your Twitter search function, look up the three titles of the movies you have chosen. Utilize your Twitter class to make this easier. Save your tweet instances in a list named tweet_list
 
 
 
-##Then, with every Twitter user in the "neighborhood" of the above Tweets(tweet posters and users mentioned), compile a list of dictionaries for each user instance.
+
 
 
 
@@ -238,17 +281,6 @@ statement = 'DROP TABLE IF EXISTS Movies'
 cur.execute(statement)
 
 
-
-
-##Create a database file called Tweets and include:
-#-tweet_id (primary key)
-#-tweet_text
-#-user_id
-#-movie_id
-#-num_favorites
-#-num_retweets
-statement = 'CREATE TABLE IF NOT EXISTS Tweets (tweet_id TEXT PRIMARY KEY, tweet_text TEXT, user_id REFERENCES Users(user_id), movie_id REFERENCES Movie(movie_id), num_favs INTEGER retweets INTEGER)'
-cur.execute(statement)
 
 
 
@@ -274,6 +306,21 @@ cur.execute(statement)
 #-released
 statement = 'CREATE TABLE IF NOT EXISTS Movies (movie_id TEXT PRIMARY KEY, movie_title TEXT, director TEXT, num_languages INTEGER, imdb_rating TEXT, top_actor TEXT, release_date TEXT)'
 cur.execute(statement)
+
+
+##Create a database file called Tweets and include:
+#-tweet_id (primary key)
+#-tweet_text
+#-user_id
+#-movie_id
+#-num_favorites
+#-num_retweets
+statement = 'CREATE TABLE IF NOT EXISTS Tweets (tweet_id TEXT PRIMARY KEY, tweet_text TEXT, user_id REFERENCES Users(user_id), movie_title REFERENCES Movie(movie_title), num_favs1 INTEGER, retweets INTEGER)'
+cur.execute(statement)
+
+
+
+
 
 
 
@@ -305,10 +352,61 @@ for person in mentions:
 
 users_table_info = zip(user_id, screen_name, num_favs, description)
 
+
+
 statement = 'INSERT OR IGNORE INTO USERS VALUES (?, ?, ?, ?)'
 for user in users_table_info:
 	cur.execute(statement, user)
 conn.commit()
+
+
+
+tweet_id = []
+tweet_text = []
+tweet_user_id = []
+movie_title1 = []
+num_favs1 = []
+retweets = []
+
+
+
+
+
+for tweet in tweet_instances:
+	tweet_id.append(tweet.id)
+for tweet in tweet_instances:
+	tweet_text.append(tweet.text)
+for tweet in tweet_instances:
+	tweet_user_id.append(tweet.user_id)
+for movie in tweet_movie_list:
+	for movie1 in movie:
+		movie_title1.append(movie1)
+for tweet in tweet_instances:
+	num_favs1.append(tweet.favs)
+for tweet in tweet_instances:
+	retweets.append(tweet.retweets)
+
+
+print(len(movie_title1))
+print(len(tweet_id))
+print(len(tweet_text))
+
+
+tweet_table_info = zip(tweet_id, tweet_text, tweet_user_id, movie_title1, num_favs1, retweets)
+
+#print(tweet_table_info)
+
+statement = 'INSERT OR IGNORE INTO Tweets VALUES (?, ?, ?, ?, ?, ?)'
+for tweet in tweet_table_info:
+	cur.execute(statement, tweet)
+conn.commit()
+
+
+
+
+
+
+
 
 
 
