@@ -10,7 +10,7 @@
 # - At least 1 function which gets and caches data from 1 of your data sources, and an invocation of each of those functions to show that they work 
 # - Tests at the end of your file that accord with those instructions (will test that you completed those instructions correctly!)
 # - Code that creates a database file and tables as your project plan explains, such that your program can be run over and over again without error and without duplicate rows in your tables.
-# - At least enough code to load data into 1 of your dtabase tables (this should accord with your instructions/tests)
+# - At least enough code to load data into 1 of your database tables (this should accord with your instructions/tests)
 
 ######### END INSTRUCTIONS #########
 
@@ -92,7 +92,8 @@ def get_movie_titles(phrase):
 			movie_titles_list.append(phrase)
 	return movie_titles_list
 
-
+get_shrek_title = get_movie_titles("Shrek")
+#print(get_shrek_title)
 
 
 
@@ -586,13 +587,37 @@ class TestMovieStr(unittest.TestCase):
 		self.assertEqual(ps.__str__(), "This movie has an imdb rating of 7.9, the primary language of the movie is English, and the plot is: After his swamp is filled with magical creatures, Shrek agrees to rescue Princess Fiona for a villainous lord in order to get his land back.", "Testing to see if the number of directors for Shrek is 2")
 
 
-class Test_Get_Movie_Titles(unittest.TestCase):
-	def test_function(self):
-		movie_titles = ["Shrek", "Braveheart", "21 Jump Street"]
-		for movie in movie_titles:
-			tweet_dictionary_list.append(get_tweet_data(movie))
-			tweet_movie_list.append(get_movie_titles(movie))
-			self.assertEqual(('Shrek' in tweet_movie_list), True)
+class TestMovieDictList(unittest.TestCase):
+	def test_type(self):
+		self.assertEqual(type(movie_dict_list), type([]), "Testing to see if movie_dict_list is of type list")
+	def test_contents(self):
+		self.assertEqual(type(movie_dict_list[0]), type({}), "Testing to see if contents of movie_dict_list are dictionaries")
+
+
+class TestTweetInstances(unittest.TestCase):
+	def test_type(self):
+		self.assertEqual(type(tweet_instances), type([]), "Testing to see if tweet_instances is of type list")
+	#def test_contents(self):
+		#pa = get_tweet_data("Shrek")
+		#ps = Tweet(pa)
+		#self.assertEqual(type(tweet_instances[0]), pa, "Testing to see if contents of movie_dict_list are Tweet objects")
+
+class TestGetUserInfo(unittest.TestCase):
+	def test_type(self):
+		self.assertEqual(type(umsi_tweets), type([]), "Testing to see if umsi_tweets is of type list")
+		def test_contents(self):
+			self.assertEqual(type(umsi_tweets[0]), type({}), "Testing to see if contents of umsi_tweets are dictionaries")
+
+
+
+
+#class Test_Get_Movie_Titles(unittest.TestCase):
+	#def test_function(self):
+		#movie_titles = ["Shrek", "Braveheart", "21 Jump Street"]
+		#tweet_movie_list = []
+		#for movie in movie_titles:
+			#tweet_movie_list.append(get_movie_titles(movie))
+			#self.assertEqual(('Shrek' in tweet_movie_list), True)
 
 
 
