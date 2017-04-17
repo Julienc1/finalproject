@@ -83,7 +83,7 @@ shrek_tweets = get_tweet_data("Shrek")
 
 
 
-
+##Define a function to attain the movie titles from every tweet, so you can classify the tweet by movie title in your database later on.
 def get_movie_titles(phrase):
 	movie_titles_list = []
 	twitter_results = api.search(phrase)
@@ -139,7 +139,7 @@ def get_movie_info(movie_title):
 	else:
 		base_url = "http://www.omdbapi.com/?t=" + str(movie_title)
 		r = requests.get(base_url)
-		print(r.url)
+		#print(r.url)
 		movie_results = json.loads(r.text)
 
                  
@@ -183,7 +183,8 @@ class Movie():
 	def find_num_directors(self):
 		return len(self.director)
 
-
+##Now define a class Tweet that accepts a dictionary as the constructor and where it represents an individual movie.
+##The instance variables should include id, text, user_id, favorites, and retweets so you can fill in the Tweets table later on
 class Tweet():
 	
 	def __init__(self, tweet_dict ={}):
@@ -222,8 +223,12 @@ for movie in movie_titles:
 	tweet_dictionary_list.append(get_tweet_data(movie))
 	tweet_movie_list.append(get_movie_titles(movie))
 
-print(tweet_movie_list)
+#print(tweet_movie_list)
 
+
+
+
+##With each Tweet dictionary you have in the list, make each of them an insatnce of class Tweet. Put all of these instances in a list, tweet_instances.
 tweet_instances = []
 for tweet1 in tweet_dictionary_list:
 	for tweet in tweet1:
@@ -247,7 +252,7 @@ for movie in movies_list:
 	movie_dict_list.append(get_movie_info(movie))
 #print(movie_dict_list)
 
-##With this list of dictionaries, create a list of Movie insatnces utilizing the Movie class.
+##With this list of dictionaries, create a list of Movie instances utilizing the Movie class and call this lsit movie_instances.
 movie_instances = []
 for movie in movie_dict_list:
 	movie_instances.append(Movie(movie))
@@ -268,6 +273,7 @@ for movie in movie_dict_list:
 
 
 # You will be creating a database file: finalproject.db
+##Create, three tables, Tweets, Users, and Movies
 
 conn = sqlite3.connect('finalproject.db')
 cur = conn.cursor()
@@ -324,7 +330,7 @@ cur.execute(statement)
 
 
 
-
+##For the users table, you must find all the neighborhood users from the tweets you have compiled, Compile all the neighborhood users in a list called mentions. 
 mentions = []
 for tweet1 in tweet_dictionary_list:
 	for tweet in tweet1:
@@ -341,7 +347,8 @@ screen_name = []
 num_favs = []
 description = []
 
-
+##Now invoke the function get_user_info with each user in the mentions list. Attain the appropriate information to fill out the Users table for later
+##Using the zip function, put the lists together and put that into the variable users_table_info
 for person in mentions:
 	user_information= get_user_info(person)
 	for info in user_information:
@@ -350,15 +357,24 @@ for person in mentions:
 		num_favs.append(info["user"]["favourites_count"])
 		description.append(info["user"]["description"])
 
+
+
+
 users_table_info = zip(user_id, screen_name, num_favs, description)
 
 
-
+##Insert the information into the users table:
 statement = 'INSERT OR IGNORE INTO USERS VALUES (?, ?, ?, ?)'
 for user in users_table_info:
 	cur.execute(statement, user)
 conn.commit()
 
+
+
+
+
+##With the list of tweet instances, fill in the lists required to fill out the Tweets table later. 
+##Zip the lists together much like the Users table and put the data into the variable tweet_table_info
 
 
 tweet_id = []
@@ -387,15 +403,18 @@ for tweet in tweet_instances:
 	retweets.append(tweet.retweets)
 
 
-print(len(movie_title1))
-print(len(tweet_id))
-print(len(tweet_text))
+#print(len(movie_title1))
+#print(len(tweet_id))
+#print(len(tweet_text))
 
 
 tweet_table_info = zip(tweet_id, tweet_text, tweet_user_id, movie_title1, num_favs1, retweets)
 
 #print(tweet_table_info)
 
+
+
+##Load the required information into the Tweets table:
 statement = 'INSERT OR IGNORE INTO Tweets VALUES (?, ?, ?, ?, ?, ?)'
 for tweet in tweet_table_info:
 	cur.execute(statement, tweet)
@@ -407,8 +426,7 @@ conn.commit()
 
 
 
-
-
+##Do the same thing for the Movies table and zip the required information into the variable movie_table_info:
 
 
 
@@ -447,6 +465,7 @@ for movie in movie_instances:
 
 
 movie_table_info = zip(movie_id, movie_title, director, num_languages, imdb_rating, top_actor, release_date)
+#print(type(movie_table_info))
 
 statement = 'INSERT OR IGNORE INTO Movies VALUES (?, ?, ?, ?, ?, ?, ?)'
 for movie in movie_table_info:
@@ -481,6 +500,116 @@ conn.close()
 
 
 # Put your tests here, with any edits you now need from when you turned them in with your project plan.
+print("\n\nBELOW THIS LINE IS OUTPUT FROM TESTS:\n")
 
+class TestCache(unittest.TestCase):
+	def test_omdb_caching(self):
+		file1 = open("206finalproject_caching.json","r").read()
+		self.assertTrue("movie_" in file1)
+
+class Task2(unittest.TestCase):
+	def test_users_1(self):
+		conn = sqlite3.connect('finalproject.db')
+		cur = conn.cursor()
+		cur.execute('SELECT * FROM Users');
+		result = cur.fetchall()
+		self.assertTrue(len(result)>=10, "Testing to see if there are at least 10 records in the Users database")
+		conn.close()
+	def test_tweets_1(self):
+		conn = sqlite3.connect('finalproject.db')
+		cur = conn.cursor()
+		cur.execute('SELECT * FROM Tweets');
+		result = cur.fetchall()
+		self.assertTrue(len(result)>=20, "Testing to see if there are at least 20 records in the Tweets database")
+		conn.close()
+	def test_tweets_2(self):
+		conn = sqlite3.connect('finalproject.db')
+		cur = conn.cursor()
+		cur.execute('SELECT * FROM Tweets');
+		result = cur.fetchall()
+		self.assertTrue(len(result[1])==6,"Testing that there are 6 columns in the Tweets table")
+		conn.close()
+	def test_movies_1(self):
+		conn = sqlite3.connect('finalproject.db')
+		cur = conn.cursor()
+		cur.execute('SELECT * FROM Movies');
+		result = cur.fetchall()
+		self.assertTrue(len(result)==3, "Testing to see if there are 3 movies in the Database")
+		conn.close()
+
+
+	def test_movies_1(self):
+		conn = sqlite3.connect('finalproject.db')
+		cur = conn.cursor()
+		cur.execute('SELECT tweet_text FROM Tweets WHERE num_favs1 > 0');
+		tweet_text1 = cur.fetchall()
+		tweet_text = [" ".join(x) for x in tweet_text1]
+		print(tweet_text)
+		self.assertEqual(type(tweet_text), type([]), "Testing to see if tweet_text is a list of strings")
+		self.assertEqual(type(tweet_text[0]), type(""), "Testing to see if it is a string")
+		conn.close()
+
+class TestOMDB(unittest.TestCase):
+	def test_omdb_search(self):
+		self.assertEqual(type(movie_titles), type([]), "Testing to see if omdb_list is a list of strings")
+	def test_omdb_search_1(self):
+		self.assertEqual(type(movie_titles[0]), type(""), "Testing to see if omdb_list[0] is a string")
+
+
+class TestZipFiles(unittest.TestCase):
+	def test_user_zip(self):
+		list1 = ["2"]
+		list2 = ["1"]
+		list3 = ["3"]
+		zip_var = zip(list1, list2, list3)
+
+		self.assertEqual(type(users_table_info), type(zip_var), "Testing to see if users_table_info is of type zip")
+	def test_tweet_zip(self):
+		list1 = ["2"]
+		list2 = ["1"]
+		list3 = ["3"]
+		zip_var = zip(list1, list2, list3)
+
+		self.assertEqual(type(tweet_table_info), type(zip_var), "Testing to see if tweet_table_info is of type zip")
+	def test_movies_zip(self):
+		list1 = ["2"]
+		list2 = ["1"]
+		list3 = ["3"]
+		zip_var = zip(list1, list2, list3)
+
+		self.assertEqual(type(movie_table_info), type(zip_var), "Testing to see if movie_table_info is of type zip")
+
+class TestMovieStr(unittest.TestCase):
+	def test_str_method(self):
+		shrek_info = get_movie_info("Shrek")
+		ps = Movie(shrek_info)
+		self.assertEqual(ps.__str__(), "This movie has an imdb rating of 7.9, the primary language of the movie is English, and the plot is: After his swamp is filled with magical creatures, Shrek agrees to rescue Princess Fiona for a villainous lord in order to get his land back.", "Testing to see if the number of directors for Shrek is 2")
+
+
+class Test_Get_Movie_Titles(unittest.TestCase):
+	def test_function(self):
+		movie_titles = ["Shrek", "Braveheart", "21 Jump Street"]
+		for movie in movie_titles:
+			tweet_dictionary_list.append(get_tweet_data(movie))
+			tweet_movie_list.append(get_movie_titles(movie))
+			self.assertEqual(('Shrek' in tweet_movie_list), True)
+
+
+
+
+#class TestSummary(unittest.TestCase):
+	#def test_summary_file(self):
+		#file1 = open("summary.txt","r")
+		#s = file1.read()
+		#file1.close()
+		#self.assertEqual(type(s),type(""),"Doesn't look like there is a summary file with the right name or content in it")
+
+
+
+
+
+
+if __name__ == "__main__":
+	unittest.main(verbosity=2)
 
 # Remember to invoke your tests so they will run! (Recommend using the verbosity=2 argument.)
