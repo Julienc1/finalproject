@@ -322,7 +322,7 @@ cur.execute(statement)
 #-movie_id
 #-num_favorites
 #-num_retweets
-statement = 'CREATE TABLE IF NOT EXISTS Tweets (tweet_id TEXT PRIMARY KEY, tweet_text TEXT, user_id REFERENCES Users(user_id), movie_title REFERENCES Movie(movie_title), num_favs1 INTEGER, retweets INTEGER)'
+statement = 'CREATE TABLE IF NOT EXISTS Tweets (tweet_id TEXT PRIMARY KEY, tweet_text TEXT, user_id REFERENCES Users(user_id), movie_title1 REFERENCES Movie(movie_title), num_favs1 INTEGER, retweets INTEGER)'
 cur.execute(statement)
 
 
@@ -472,6 +472,144 @@ statement = 'INSERT OR IGNORE INTO Movies VALUES (?, ?, ?, ?, ?, ?, ?)'
 for movie in movie_table_info:
 	cur.execute(statement, movie)
 conn.commit()
+
+
+
+
+query = 'SELECT * FROM Tweets WHERE num_favs1 > 1'
+cur.execute(query)
+more_than_2_favs = cur.fetchall()
+
+
+
+query = 'SELECT screen_name, num_favs FROM Users'
+cur.execute(query)
+screen_names = cur.fetchall()
+
+#print(screen_names)
+
+
+query = 'SELECT * FROM Movies WHERE imdb_rating > 7 '
+cur.execute(query)
+high_imdb_rating = cur.fetchall()
+
+
+
+
+query = 'SELECT description FROM Users WHERE num_favs > 15'
+cur.execute(query)
+descriptions_fav_users1 = cur.fetchall()
+descriptions_fav_users = [" ".join(x) for x in descriptions_fav_users1]
+
+
+
+
+query = 'SELECT screen_name, tweet_text FROM Tweets INNER JOIN Users on Tweets.user_id=Users.user_id WHERE Tweets.retweets > 5'
+cur.execute(query)
+user_and_text = cur.fetchall()
+
+
+query = 'SELECT movie_title, retweets FROM Movies INNER JOIN Tweets'
+cur.execute(query)
+movies_tweeted = cur.fetchall()
+
+
+
+
+##Now you are going to find the most common number present in usernames of users who have a number included in their screen_name.
+##To make this work, use filters, list comprehensions and dictionary accumulation to achieve a final dictionary where the keys are the numbers 0-9
+##and their values are the number of times they are seen throughout all the usernames.
+
+filter = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+filter_set = set(filter)
+
+
+many_favs_filter = [tup for tup in screen_names for item in filter if item in tup[0]]
+
+many_favs_filter_list = list(many_favs_filter)
+
+
+twitter_info_diction1 = defaultdict(list)
+for k, v in many_favs_filter_list:
+	twitter_info_diction1[k].append(v)
+twitter_info_diction = dict(twitter_info_diction1)
+
+
+
+
+twitter_info_diction2 = defaultdict(list)
+for k, v in screen_names:
+	twitter_info_diction2[k].append(v)
+twitter_info_diction2 = dict(twitter_info_diction2)
+
+print(twitter_info_diction2)
+
+user_name_count_list = []
+for key in twitter_info_diction2:
+	for letter in key:
+		user_name_count_list.append(letter)
+
+c = Counter(user_name_count_list)
+most_common_char1 = c.most_common(5)
+#print(most_common_char1)
+most_common_char2 = most_common_char1[3]
+
+for tup in most_common_char1:
+	if tup[1] > most_common_char2[1]:
+		most_common_char2 = tup
+#print(most_common_char2)
+
+
+
+
+
+most_common_num = {}
+
+for tup in many_favs_filter:
+	for number in filter:
+		if number in tup[0]:
+			if number not in most_common_num:
+				most_common_num[number] = 0
+			else: 
+				most_common_num[number] += 1
+
+
+
+final_most_common_number = max(most_common_num, key=most_common_num.get)
+
+
+
+
+print("The most common character in a username is:  " + most_common_char2[0] + " and the number of times it occurred is: " + str(most_common_char2[1]))
+
+
+print("The most common number found in usernames that include numbers is: " + str(final_most_common_number))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
