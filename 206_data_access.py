@@ -29,6 +29,7 @@ import json
 import sqlite3
 import requests
 import omdb
+from datetime import datetime 
 # Begin filling in instructions....
 
 ##### TWEEPY SETUP CODE:
@@ -604,6 +605,23 @@ print("The most common number found in usernames that include numbers is: " + st
 
 
 
+today = datetime.date.today()
+
+output_txt = "output.txt"
+
+f = open(output_txt, "w")
+
+f.write('This is my summary output page:')
+f.write('\n')
+f.write('\n')
+f.write('My three movie titles are:' + str(movie_titles))
+f.write('\n')
+f.write('\n')
+f.write("I have looked up Tweets on Twitter that have these movie titles in their content.")
+f.write('\n')
+f.write('\n')
+f.write('The current date is:')
+f.write(str(today))
 
 
 
