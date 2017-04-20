@@ -520,6 +520,40 @@ movies_tweeted = cur.fetchall()
 ##To make this work, use filters, list comprehensions and dictionary accumulation to achieve a final dictionary where the keys are the numbers 0-9
 ##and their values are the number of times they are seen throughout all the usernames.
 
+
+
+
+
+
+twitter_info_diction2 = defaultdict(list)
+for k, v in screen_names:
+	twitter_info_diction2[k].append(v)
+twitter_info_diction2 = dict(twitter_info_diction2)
+
+print(twitter_info_diction2)
+
+user_name_count_list = []
+for key in twitter_info_diction2:
+	for letter in key:
+		user_name_count_list.append(letter.upper())
+
+c = Counter(user_name_count_list)
+most_common_char1 = c.most_common(5)
+#print(most_common_char1)
+most_common_char2 = most_common_char1[3]
+
+for tup in most_common_char1:
+	if tup[1] > most_common_char2[1]:
+		most_common_char2 = tup
+#print(most_common_char2)
+
+
+
+
+
+
+
+
 filter = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 filter_set = set(filter)
@@ -538,27 +572,7 @@ twitter_info_diction = dict(twitter_info_diction1)
 
 
 
-twitter_info_diction2 = defaultdict(list)
-for k, v in screen_names:
-	twitter_info_diction2[k].append(v)
-twitter_info_diction2 = dict(twitter_info_diction2)
 
-print(twitter_info_diction2)
-
-user_name_count_list = []
-for key in twitter_info_diction2:
-	for letter in key:
-		user_name_count_list.append(letter)
-
-c = Counter(user_name_count_list)
-most_common_char1 = c.most_common(5)
-#print(most_common_char1)
-most_common_char2 = most_common_char1[3]
-
-for tup in most_common_char1:
-	if tup[1] > most_common_char2[1]:
-		most_common_char2 = tup
-#print(most_common_char2)
 
 
 
