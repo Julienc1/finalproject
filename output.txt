@@ -1,0 +1,11 @@
+This is my summary output page:
+
+My three movie titles are:['Shrek', 'Braveheart', '21 Jump Street']
+
+I have looked up Tweets on Twitter that have these movie titles in their content.
+
+The current date is:2017-04-20
+
+The most common character in a username is:  A and the number of times it occurred is: 54
+
+The most common number found in usernames that include numbers is: 2

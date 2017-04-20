@@ -29,7 +29,7 @@ import json
 import sqlite3
 import requests
 import omdb
-from datetime import datetime 
+import datetime 
 # Begin filling in instructions....
 
 ##### TWEEPY SETUP CODE:
@@ -531,7 +531,7 @@ for k, v in screen_names:
 	twitter_info_diction2[k].append(v)
 twitter_info_diction2 = dict(twitter_info_diction2)
 
-print(twitter_info_diction2)
+#print(twitter_info_diction2)
 
 user_name_count_list = []
 for key in twitter_info_diction2:
@@ -622,6 +622,12 @@ f.write('\n')
 f.write('\n')
 f.write('The current date is:')
 f.write(str(today))
+f.write('\n')
+f.write('\n')
+f.write("The most common character in a username is:  " + most_common_char2[0] + " and the number of times it occurred is: " + str(most_common_char2[1]))
+f.write('\n')
+f.write('\n')
+f.write("The most common number found in usernames that include numbers is: " + str(final_most_common_number))
 
 
 
