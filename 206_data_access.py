@@ -17,6 +17,16 @@
 #Name: Julien Childress
 #Section: Thursday 3-4 P.M.
 
+
+##NOTE##
+
+##Code utilized to cache my data has been inspired from previous assignments but altered to fit this assignment.
+##All methods relating to databases and data manipulation has also been inspired from past assignments but has also been tweaked for this assignment.
+##All the code present in this project is my own.
+
+##END NOTE##
+
+
 # Put all import statements you need here.
 import unittest
 import itertools
@@ -183,7 +193,7 @@ class Movie():
 		return "This movie has an imdb rating of {}, the primary language of the movie is {}, and the plot is: {}".format(self.rating, self.language, self.plot)
 
 	def find_num_directors(self):
-		return len(self.director)
+		return len(self.director.split(","))
 
 ##Now define a class Tweet that accepts a dictionary as the constructor and where it represents an individual movie.
 ##The instance variables should include id, text, user_id, favorites, and retweets so you can fill in the Tweets table later on
@@ -763,6 +773,13 @@ class TestMovieStr(unittest.TestCase):
 		self.assertEqual(ps.__str__(), "This movie has an imdb rating of 7.9, the primary language of the movie is English, and the plot is: After his swamp is filled with magical creatures, Shrek agrees to rescue Princess Fiona for a villainous lord in order to get his land back.", "Testing to see if the number of directors for Shrek is 2")
 
 
+class TestDirectors(unittest.TestCase):
+	def test_str_method(self):
+		shrek_info = get_movie_info("Shrek")
+		ps = Movie(shrek_info)
+		self.assertEqual(ps.find_num_directors(), 2, "Testing to see if number of directors is 2 for Shrek")
+
+
 class TestMovieDictList(unittest.TestCase):
 	def test_type(self):
 		self.assertEqual(type(movie_dict_list), type([]), "Testing to see if movie_dict_list is of type list")
@@ -783,6 +800,41 @@ class TestGetUserInfo(unittest.TestCase):
 		self.assertEqual(type(umsi_tweets), type([]), "Testing to see if umsi_tweets is of type list")
 		def test_contents(self):
 			self.assertEqual(type(umsi_tweets[0]), type({}), "Testing to see if contents of umsi_tweets are dictionaries")
+
+
+class TestGetTweetData(unittest.TestCase):
+	def test_get_tweet_data(self):
+		data1 = get_tweet_data("Shrek")
+		self.assertEqual(type(data1),type(["Shrek",3]))
+
+class TestGetMovieTitles(unittest.TestCase):
+	def test_get_movie_titles(self):
+		data1 = get_movie_titles("Shrek")
+		self.assertEqual(type(data1),type(["Shrek",3]))
+	def test_get_movie_titles1(self):
+		data1 = get_movie_titles("Shrek")
+		self.assertEqual(type(data1[0]),type("Shrek"))
+
+class TestGetUserInfo(unittest.TestCase):
+	def test_get_user_info(self):
+		data1 = get_user_info("UMSI")
+		self.assertEqual(type(data1),type(["Shrek",3]))
+	def test_get_user_info1(self):
+		self.assertEqual(type(umsi_tweets),type([]))
+	def test_get_user_info2(self):
+		self.assertEqual(type(umsi_tweets[5]),type({}))
+
+
+class TestGetMovieInfo(unittest.TestCase):
+	def test_get_movie_info(self):
+		data1 = get_movie_info("Shrek")
+		self.assertEqual(type(data1),type({}))
+	def test_get_movie_info1(self):
+		self.assertEqual(type(shrek_info),type({}))
+
+
+
+
 
 
 

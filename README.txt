@@ -41,6 +41,7 @@ TABLE OF CONTENTS:
 	2. 206finalproject_caching.json: This is the json file that collects and caches the information  from making requests to both the Twitter and OMDB databases.
 	3. finalproject.db: This is the database file that includes the three tables, Tweets, Users, and Movies. These three tables include many bits of information from Twitter and OMDB.
 	4. README.txt: This file that explains the project.
+	5. An output file called "output.txt" that gives some information on the movie_titles and output presented in the code.
 
 
 6. Functions
