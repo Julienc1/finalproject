@@ -33,15 +33,16 @@ TABLE OF CONTENTS:
 3. You run this program by opening terminal and going to the appropriate file folder will the finalproject.py is contained. Then, you run the program by typing in “python finalproject.py”.
 
 
-4. To run this file, you should have tweepy, and sqlite3 downloaded with pip and you should also have a file in your finalproject.py folder with your appropriate twitter information. My file is called twitter_info.py.
+4. To run this file, you should have tweepy, and sqlite3 downloaded with pip and you should also have a file in your finalproject.py folder with your appropriate twitter information. My file is called twitter_info.py. I have not included my personal twitter info with this file.
 
 
 5. The files included are as follows:
-	1. finalproject.py: This file is the main file and allows the program to run.
+	1. 206_data_access.py: This file is the main file and allows the program to run.
 	2. 206finalproject_caching.json: This is the json file that collects and caches the information  from making requests to both the Twitter and OMDB databases.
 	3. finalproject.db: This is the database file that includes the three tables, Tweets, Users, and Movies. These three tables include many bits of information from Twitter and OMDB.
 	4. README.txt: This file that explains the project.
 	5. An output file called "output.txt" that gives some information on the movie_titles and output presented in the code.
+	6. A screenshot of my code running in terminal
 
 
 6. Functions
@@ -124,4 +125,9 @@ Line(s) of code that generate the output. : 598, 601
 OK to be approximate here — ok if it ends up off by 1 or 2. Make it easy for us to find!
 	
 
-Nothing else to report for the project!
+Some things to Note:
+
+Most class and function tests are at the bottom of the tests!
+
+
+I also wasn't exactly sure what it meant to have a Twitter Summary in my output file so I just took a line up to explain what I was searching for on Twitter.

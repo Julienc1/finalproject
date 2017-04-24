@@ -485,6 +485,9 @@ for movie in movie_table_info:
 conn.commit()
 
 
+##Now I am going to make queries to my database to find cool intersections of data!
+
+
 
 
 query = 'SELECT * FROM Tweets WHERE num_favs1 > 1'
@@ -493,11 +496,6 @@ more_than_2_favs = cur.fetchall()
 
 
 
-query = 'SELECT screen_name, num_favs FROM Users'
-cur.execute(query)
-screen_names = cur.fetchall()
-
-#print(screen_names)
 
 
 query = 'SELECT * FROM Movies WHERE imdb_rating > 7 '
@@ -525,12 +523,13 @@ cur.execute(query)
 movies_tweeted = cur.fetchall()
 
 
+query = 'SELECT screen_name, num_favs FROM Users'
+cur.execute(query)
+screen_names = cur.fetchall()
 
-
-##Now you are going to find the most common number present in usernames of users who have a number included in their screen_name.
+##Now you are going to find the most common number present in usernames of users who have a number included in their screen_name as well as the most common character overall found in the usernames you have collected.
 ##To make this work, use filters, list comprehensions and dictionary accumulation to achieve a final dictionary where the keys are the numbers 0-9
 ##and their values are the number of times they are seen throughout all the usernames.
-
 
 
 
@@ -553,6 +552,10 @@ most_common_char1 = c.most_common(5)
 #print(most_common_char1)
 most_common_char2 = most_common_char1[3]
 
+
+
+#3Find the most common character overall here:
+
 for tup in most_common_char1:
 	if tup[1] > most_common_char2[1]:
 		most_common_char2 = tup
@@ -562,7 +565,7 @@ for tup in most_common_char1:
 
 
 
-
+##Below, use filtering to get only the usernames with numbers in them!
 
 
 filter = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
@@ -833,7 +836,13 @@ class TestGetMovieInfo(unittest.TestCase):
 		self.assertEqual(type(shrek_info),type({}))
 
 
-
+class TestClassTweet(unittest.TestCase):
+	def test_tweet(self):
+		tweet_instances = []
+		for tweet1 in tweet_dictionary_list:
+			for tweet in tweet1:
+				tweet_instances.append(Tweet(tweet))
+		self.assertEqual(type(tweet_instances[0].text),type(""))
 
 
 
